@@ -1,0 +1,11 @@
+@startuml
+
+(閲覧)
+(編集) as (UC2)
+usecase UC3
+usecase (Last\nusecase) as UC4
+
+:管理者:
+:ユーザー:
+
+@enduml
