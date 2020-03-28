@@ -1,24 +1,20 @@
-group 'spring-react-example'
+group 'promari-curaion'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext {
-        springBootVersion = '2.2.6.RELEASE'
-    }
     repositories {
-        // NOTE: You should declare only repositories that you need here
-        mavenLocal()
-        mavenCentral()
+        google()
         jcenter()
-        maven { url "http://repo.spring.io/release" }
-        maven { url "http://repo.spring.io/milestone" }
-        maven { url "http://repo.spring.io/snapshot" }
+        mavenCentral()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
     }
+    ext {
+        springBootVersion = '2.2.6.RELEASE'
+    }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "com.moowork.gradle:gradle-node-plugin:1.1.0"
         classpath 'io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE'
     }
@@ -31,6 +27,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 sourceCompatibility = 13
+targetCompatibility = 13
 
 repositories {
     mavenCentral()
@@ -42,14 +39,25 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
 
-    // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf
+    // Utility
+    implementation "org.projectlombok:lombok:1.18.12"
+    // crawler
+    implementation "edu.uci.ics:crawler4j:4.4.0"
+    implementation "com.sleepycat:je:18.3.12"
+    // SOUP
+    implementation "org.jsoup:jsoup:1.11.3"
+
+    // thymeleaf
     compile group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.11.RELEASE'
-    // https://mvnrepository.com/artifact/org.thymeleaf/thymeleaf-spring4
     compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version: '3.0.11.RELEASE'
+    // Log
+    testImplementation "org.slf4j:slf4j-log4j12:1.7.30"
 
+    // TEST
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:5.5.2"
 }
 
@@ -58,6 +66,10 @@ node {
     download = true
     nodeModulesDir = file("${project.projectDir}/frontend")
 }
+
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '6.3.0'
+//}
 
 task webpack(type: YarnTask, dependsOn: npmInstall) {
     args = ['build']
