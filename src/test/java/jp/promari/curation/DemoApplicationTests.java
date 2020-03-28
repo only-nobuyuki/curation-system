@@ -1,4 +1,4 @@
-package jp.co.promari.curation;
+package jp.promari.curation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

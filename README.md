@@ -1,65 +1,42 @@
-Here you can find simple demo project for Spring hosting thymeleaf templates and react app under /admin/
+＃シンプルなクローラーのデモ
+1. JDK1.8
+2. springboot 2.1.5
+3. webmagic 0.7.3
+4. mongodb 4.0.2
+5. swagger2 2.9.2
 
-For simple react app i used create-react-app and react router to test routes
+## MongoDBの単純な構文
+**バージョン情報を表示**
+> db.version（）
 
-The goal was to make site urls look like this
+**すべてのデータベースを表示**
+>データベースを表示
 
-    /admin/static/** => react static folder only for existing files in /resources/react_build/static
-    
-    /admin/**        => react /resources/react_build/index.html for everything but /admin/static/**
-    
-    /**              =>  Theamleaf templates for everything else 
-    In this demo it is IndexController and template will come from /resources/templates/index.thml
+データベースの切り替え
+[db_name]を使用
 
-Project structure looks like this
+現在のデータベースを表示する
+db
 
-    frontend
-        build
-        ... react code
-        
-    src
-        main
-            java
-                ... java code
-            resources
-                react_build => symlink to /frontend/build
-                templates
-                    index.html
+現在のデータベースを削除する
+db.dropDatabase（）
 
-`react_build` is actually a symlink to /frontend/build created with
+コレクションを見る
+コレクションを表示
 
-    cd src/main/resources/
-    ln -s ../../../frontend/build/ react_build
+コレクションを削除
+db.test.drop（）
 
-The main part is in `BaseWebMvcConfigurerAdapter` inner class `AdminResourceResolver`.
+ドキュメントを挿入
+db.test.insert（[
+{name： "test1"}、
+{name： "test2"}
+]）
 
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+ドキュメントを削除
+db.test.remove（（））
+db.test.remove（{name： "Test 2"}）
 
-        ResourceResolver resolver = new AdminResourceResolver();
-        registry.addResourceHandler("/admin/**")
-                .resourceChain(false)
-                .addResolver(resolver);
-
-
-        registry.addResourceHandler("/admin/")
-                .resourceChain(false)
-                .addResolver(resolver);
-    }
-
-
-    private class AdminResourceResolver implements ResourceResolver {
-         ... //custom ResourceResolver code
-    }
-
-I'm using this approach to forward  directory and every subdirectory to a single react/angular/any other js lib file
-
-
-One thing to mention is that i'm using  gradle `com.moowork.node` plugin 
-to build js before java app starts, so if you want to disable it,
-just comment the last line in build.gradle `processResources.dependsOn 'webpack'`
-
-
-
-    > gradle bootStart
-    
-will host app on localhost:8080 
+ドキュメントのクエリ
+db.test.find（）
+db.test.find（{名前： "テスト2"}）

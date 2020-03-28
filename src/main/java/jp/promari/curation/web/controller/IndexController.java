@@ -1,4 +1,4 @@
-package jp.co.promari.curation.web.controller;
+package jp.promari.curation.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

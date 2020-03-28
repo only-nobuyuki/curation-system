@@ -1,8 +1,7 @@
-package jp.co.promari.curation;
+package jp.promari.curation;
 
 import java.nio.file.Files;
 import java.util.stream.Collectors;
-import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -10,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-@Slf4j
 public class ParserTest {
 
     String html;
