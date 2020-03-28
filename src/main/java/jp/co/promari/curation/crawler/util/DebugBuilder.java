@@ -1,4 +1,4 @@
-package jp.co.promari.curation.util;
+package jp.co.promari.curation.crawler.util;
 
 public class DebugBuilder {
 

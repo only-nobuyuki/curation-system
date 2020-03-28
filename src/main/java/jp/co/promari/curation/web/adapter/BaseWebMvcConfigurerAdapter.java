@@ -1,4 +1,4 @@
-package jp.co.promari.curation;
+package jp.co.promari.curation.web.adapter;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
