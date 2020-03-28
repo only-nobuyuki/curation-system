@@ -1,10 +1,9 @@
 package jp.promari.curation;
 
-import jp.promari.curation.web.service.ChapterService;
-import jp.promari.curation.web.service.ContentService;
-import jp.promari.curation.web.service.NovelService;
+import jp.promari.curation.web.crawler.novel.service.ChapterService;
+import jp.promari.curation.web.crawler.novel.service.ContentService;
+import jp.promari.curation.web.crawler.novel.service.NovelService;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
