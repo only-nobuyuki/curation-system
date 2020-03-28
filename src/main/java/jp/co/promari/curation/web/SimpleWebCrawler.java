@@ -16,7 +16,6 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
-@Slf4j
 @Component
 public class SimpleWebCrawler extends WebCrawler {
 
