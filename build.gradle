@@ -1,0 +1,113 @@
+group 'promari-curaion'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    ext {
+        springBootVersion = '2.2.6.RELEASE'
+        lombokVersion = '1.18.12'
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+        classpath "com.moowork.gradle:gradle-node-plugin:1.1.0"
+        classpath 'io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE'
+    }
+}
+
+apply plugin: "com.moowork.node"
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url "http://repo.spring.io/release" }
+    maven { url "http://repo.spring.io/milestone" }
+    maven { url "http://repo.spring.io/snapshot" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-devtools:${springBootVersion}"
+
+    // Utility
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: "${lombokVersion}"
+    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: "${lombokVersion}"
+
+    // Logging
+    runtimeOnly 'org.slf4j:log4j-over-slf4j'
+    // crawler
+    implementation "edu.uci.ics:crawler4j:4.4.0"
+    implementation "com.sleepycat:je:18.3.12"
+    implementation ("us.codecraft:webmagic-core:0.7.3") {
+        exclude group: 'slf4j-log4j12', module: 'slf4j'
+    }
+    implementation "us.codecraft:webmagic-extension:0.7.3"
+    // SOUP
+    implementation "org.jsoup:jsoup:1.11.3"
+
+    // thymeleaf
+    compile group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.11.RELEASE'
+    compile group: 'org.thymeleaf', name: 'thymeleaf-spring5', version: '3.0.11.RELEASE'
+
+    // TEST
+    testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.5.2"
+
+    // DB
+    implementation "org.springframework.boot:spring-boot-starter-data-mongodb:${springBootVersion}"
+
+    // Swagger
+    implementation "io.springfox:springfox-swagger2:2.9.2"
+    implementation "io.springfox:springfox-swagger-ui:2.9.2"
+
+    // Common
+    implementation "org.apache.commons:commons-lang3:3.9"
+}
+
+configurations.all {
+    exclude group: 'log4j' // = Old only log4j impl.
+    exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'// = SLF4J > Log4J 2.x. (Apache Side)
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12' // = SLF4J > Log4J 1.x. (SLF4J Side)
+    exclude group: 'org.slf4j', module: 'slf4j-jdk14' // = SLF4J > JDK14.
+    exclude group: 'commons-logging', module: 'commons-logging-api' // Replaced by jcl-over-slf4j
+    exclude group: 'commons-logging', module: 'commons-logging' // Implementation is not needed.
+}
+
+test {
+    useJUnitPlatform()
+}
+
+node {
+    download = true
+    nodeModulesDir = file("${project.projectDir}/frontend")
+}
+
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '6.3.0'
+//}
+
+task webpack(type: YarnTask, dependsOn: npmInstall) {
+    args = ['build']
+}
+
+processResources.dependsOn 'webpack'
