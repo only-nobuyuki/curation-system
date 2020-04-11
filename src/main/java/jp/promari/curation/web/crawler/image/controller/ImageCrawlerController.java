@@ -26,20 +26,19 @@ public class ImageCrawlerController {
 
         CrawlConfig config = new CrawlConfig();
 
-        // Set the folder where intermediate crawl data is stored (e.g. list of urls that are extracted from previously
-        // fetched pages and need to be crawled later).
+        // 中間クロールデータが格納されるフォルダを設定します。
+        // (例：以前に取得したページから抽出され、後でクロールする必要があるURLのリスト)
         config.setCrawlStorageFolder("C:\\tmp\\crawler4j/");
 
-        // Number of threads to use during crawling. Increasing this typically makes crawling faster. But crawling
-        // speed depends on many other factors as well. You can experiment with this to figure out what number of
-        // threads works best for you.
+        // クローリング中に使用するスレッドの数。これを増やすと、通常はクロールが速くなります。
+        // しかし、クロール速度は他の多くの要因にも依存しています。
+        //  これで実験してみて、自分にとって最適なスレッド数を把握することができます。
         int numberOfCrawlers = 8;
 
-        // Where should the downloaded images be stored?
+        // ダウンロードした画像はどこに保存しますか？
         File storageFolder = new File("/tmp/crawled-images/");
 
-        // Since images are binary content, we need to set this parameter to
-        // true to make sure they are included in the crawl.
+        // 画像はバイナリコンテンツなので、このパラメータをtrueに設定して、画像がクロールに含まれることを確認する必要があります。
         config.setIncludeBinaryContentInCrawling(true);
 
         List<String> crawlDomains = Arrays.asList("https://promari.jp/tags/programming/");

@@ -1,14 +1,19 @@
 package jp.promari.curation.web.crawler.common;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Data
+
 public class ResultBean {
 
+    @Setter
     private String code;
+    @Setter
     private String msg;
     private Map<String,Object> body = new LinkedHashMap<>();
 

@@ -1,7 +1,7 @@
 package jp.promari.curation.web.crawler.novel.entity;
 
-import lombok.Data;
-import org.springframework.data.annotation.Id;
+        import lombok.Data;
+        import org.springframework.data.annotation.Id;
 
 @Data
 public class Chapter {

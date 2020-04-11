@@ -23,10 +23,13 @@ public class NovelProcessor implements PageProcessor {
     @Autowired
     private NovelPipeline novelPipeline;
 
-    private String url = "https://www.biquge5.com/shuku/";
+    /**
+     * クローリング先のURL
+     */
+    private String targetURLToCrawl = "https://kakuyomu.jp/works/1177354054889946510/episodes/1177354054890763191";
 
     private Site site = Site.me()
-            .setCharset("gbk")
+            .setCharset("UTF-8")
             .setTimeOut(10 * 1000)
             .setRetrySleepTime(3000)
             .setRetryTimes(3)
@@ -46,36 +49,37 @@ public class NovelProcessor implements PageProcessor {
             chapters.forEach(item -> {
                 page.addTargetRequest(item.links().toString());
             });
-            if (chapters.size() != 0) {
-                String image = page.getHtml().css("div#fmimg img", "src").toString();
-                String title = page.getHtml().css("h1", "text").toString();
-                String autor = page.getHtml().css("div#info p:nth-child(2)", "text").toString();
-                String description = page.getHtml().css("div#intro p", "text").toString();
-                String category = page.getHtml().css("div.con_top>a:nth-of-type(2)", "text").toString();
-                Novel novel = new Novel();
-                novel.setImage(image);
-                novel.setTitle(title);
-                novel.setAuthor(autor);
-                novel.setDescription(description);
-                novel.setCategory(category);
-                page.putField("novel", novel);
-            } else {
-                String novelTitle = page.getHtml().css("div.con_top>a:nth-of-type(3)", "text").toString();
-                String chapterTitle = page.getHtml().css("h1", "text").toString();
-                String content = page.getHtml().css("div#content").toString();//html格式
-
-                Novel novel = new Novel();
-                novel.setTitle(novelTitle);
-                Chapter chapter = new Chapter();
-                chapter.setTitle(chapterTitle);
-                Content content1 = new Content();
-                content1.setDetails(content);
-                NovelBO novelBO = new NovelBO();
-                novelBO.setChapter(chapter);
-                novelBO.setContent(content1);
-                novelBO.setNovel(novel);
-                page.putField("novelBO", novelBO);
-            }
+            System.out.println(page.toString());
+//            if (chapters.size() != 0) {
+//                String image = page.getHtml().css("div#fmimg img", "src").toString();
+//                String title = page.getHtml().css("h1", "text").toString();
+//                String autor = page.getHtml().css("div#info p:nth-child(2)", "text").toString();
+//                String description = page.getHtml().css("div#intro p", "text").toString();
+//                String category = page.getHtml().css("div.con_top>a:nth-of-type(2)", "text").toString();
+//                Novel novel = new Novel();
+//                novel.setImage(image);
+//                novel.setTitle(title);
+//                novel.setAuthor(autor);
+//                novel.setDescription(description);
+//                novel.setCategory(category);
+//                page.putField("novel", novel);
+//            } else {
+//                String novelTitle = page.getHtml().css("div.con_top>a:nth-of-type(3)", "text").toString();
+//                String chapterTitle = page.getHtml().css("h1", "text").toString();
+//                String content = page.getHtml().css("div#content").toString();//html格式
+//
+//                Novel novel = new Novel();
+//                novel.setTitle(novelTitle);
+//                Chapter chapter = new Chapter();
+//                chapter.setTitle(chapterTitle);
+//                Content content1 = new Content();
+//                content1.setDetails(content);
+//                NovelBO novelBO = new NovelBO();
+//                novelBO.setChapter(chapter);
+//                novelBO.setContent(content1);
+//                novelBO.setNovel(novel);
+//                page.putField("novelBO", novelBO);
+//            }
         }
     }
 
@@ -90,7 +94,7 @@ public class NovelProcessor implements PageProcessor {
         System.out.println("Start crawling .....");
         startTime = System.currentTimeMillis();
         Spider.create(new NovelProcessor())
-                .addUrl(url)
+                .addUrl(targetURLToCrawl)
                 .setScheduler(new QueueScheduler().setDuplicateRemover(new BloomFilterDuplicateRemover(100000)))
                 .thread(20)
                 .addPipeline(novelPipeline)
