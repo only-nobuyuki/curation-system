@@ -26,7 +26,7 @@ public class NovelProcessor implements PageProcessor {
     /**
      * クローリング先のURL
      */
-    private String targetURLToCrawl = "https://kakuyomu.jp/works/1177354054889946510/episodes/1177354054890763191";
+    private String targetURLToCrawl = "https://dev.classmethod.jp/news/200421-workspaces-webinar/";
 
     private Site site = Site.me()
             .setCharset("UTF-8")
@@ -44,12 +44,16 @@ public class NovelProcessor implements PageProcessor {
             });
             List<Selectable> list = page.getHtml().css("div.page a:nth-child(3) ").nodes();
             page.addTargetRequest(list.get(0).links().toString());
+
+            //processメソッドの動きを確認するため
+            System.out.println("sucsess");
         } else {
             List<Selectable> chapters = page.getHtml().css("div#list a").nodes();
             chapters.forEach(item -> {
                 page.addTargetRequest(item.links().toString());
+
             });
-            System.out.println(page.toString());
+
 //            if (chapters.size() != 0) {
 //                String image = page.getHtml().css("div#fmimg img", "src").toString();
 //                String title = page.getHtml().css("h1", "text").toString();
@@ -80,6 +84,9 @@ public class NovelProcessor implements PageProcessor {
 //                novelBO.setNovel(novel);
 //                page.putField("novelBO", novelBO);
 //            }
+            //processメソッドの動きを確認するため
+            System.out.println(chapters.toString());
+            System.out.println("fail");
         }
     }
 

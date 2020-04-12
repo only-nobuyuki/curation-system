@@ -16,11 +16,6 @@ public class PromariCurationApp extends SpringBootServletInitializer {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(PromariCurationApp.class, args);
 
-        Page page = new Page();
-
-        PageProcessor novelProcessor=new NovelProcessor();
-
-        System.out.println(novelProcessor.getSite());
     }
 
 }
