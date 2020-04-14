@@ -29,7 +29,7 @@ public class NovelProcessor implements PageProcessor {
     private String targetURLToCrawl = "https://dev.classmethod.jp/news/200421-workspaces-webinar/";
 
     private Site site = Site.me()
-            .setCharset("UTF-8")
+            .setCharset(null)
             .setTimeOut(10 * 1000)
             .setRetrySleepTime(3000)
             .setRetryTimes(3)
@@ -85,7 +85,7 @@ public class NovelProcessor implements PageProcessor {
 //                page.putField("novelBO", novelBO);
 //            }
             //processメソッドの動きを確認するため
-            System.out.println(chapters.toString());
+            System.out.println(page);
             System.out.println("fail");
         }
     }
@@ -95,7 +95,7 @@ public class NovelProcessor implements PageProcessor {
         return site;
     }
 
-    @Scheduled(initialDelay = 1000, fixedDelay = 60 * 60 * 1000)
+    @Scheduled(initialDelay = 1000, fixedDelay = 60 * 60 * 1000 * 24)
     public void process() {
         long startTime, endTime;
         System.out.println("Start crawling .....");
