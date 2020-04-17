@@ -56,7 +56,6 @@ dependencies {
     // Logging
     runtimeOnly 'org.slf4j:log4j-over-slf4j'
     // crawler
-    implementation "edu.uci.ics:crawler4j:4.4.0"
     implementation "com.sleepycat:je:18.3.12"
     implementation ("us.codecraft:webmagic-core:0.7.3") {
         exclude group: 'slf4j-log4j12', module: 'slf4j'
