@@ -28,7 +28,7 @@ public class ClassMethodServiceImpl implements ClassMethodService {
     }
 
     @Override
-    public List<ClassMethodEntity> findByTitle(String title) {
+    public ClassMethodEntity findByTitle(String title) {
         return classMethodRepository.findByTitle(title);
     }
 

@@ -10,6 +10,8 @@ import org.jsoup.nodes.Node;
 @Builder
 public class ClassMethodDTO {
 
+
+    private String id;
     private String title;
     private String link;
     private String pubdate;

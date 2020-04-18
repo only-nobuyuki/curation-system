@@ -54,10 +54,10 @@ public class ClassMethodProcessor implements PageProcessor {
                 .collect(Collectors.toList());
 
         List<ClassMethodDTO> classMethodDTOList = new ArrayList<>();
-        // inset DTO
-        ClassMethodDTO classMethodDTO = ClassMethodDTO.builder().build();
         targetNodes.stream().forEach(target -> {
             Node node = (Node) target;
+            // inset DTO
+            ClassMethodDTO classMethodDTO = ClassMethodDTO.builder().build();
             // Title
             String rowTitle = node.childNodes().get(1).toString();
             classMethodDTO.setTitle(rowTitle.substring(7, rowTitle.length() - 8));

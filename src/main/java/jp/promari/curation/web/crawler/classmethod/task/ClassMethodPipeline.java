@@ -10,7 +10,6 @@ import us.codecraft.webmagic.Task;
 import us.codecraft.webmagic.pipeline.Pipeline;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class ClassMethodPipeline implements Pipeline {
@@ -25,9 +24,17 @@ public class ClassMethodPipeline implements Pipeline {
 
         if (classMethodDTO != null) {
             classMethodDTO.stream().forEach(dto -> {
-                Optional<ClassMethodEntity> entity = classMethodService.findById(dto.getPermalinkId());
-                if (!entity.isEmpty()) {
-                    classMethodService.save(entity.get());
+                ClassMethodEntity entity = classMethodService.findByTitle(dto.getPermalinkId());
+                if (entity == null) {
+                    ClassMethodEntity classMethodEntity = ClassMethodEntity.builder()
+                            .title(dto.getTitle())
+                            .pubdate(dto.getPubdate())
+                            .link(dto.getLink())
+                            .permalink(dto.getPermalink().toString())
+                            .image(dto.getImage())
+                            .build();
+
+                    classMethodService.save(classMethodEntity);
                 }
             });
         }

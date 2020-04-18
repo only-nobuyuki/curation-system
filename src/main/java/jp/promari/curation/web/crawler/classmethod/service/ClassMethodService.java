@@ -11,7 +11,7 @@ public interface ClassMethodService {
 
     Optional<ClassMethodEntity> findById(String id);
 
-    List<ClassMethodEntity> findByTitle(String title);
+    ClassMethodEntity findByTitle(String title);
 
     ClassMethodEntity save(ClassMethodEntity novel);
 
