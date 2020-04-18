@@ -1,8 +1,6 @@
 package jp.promari.curation;
 
-import jp.promari.curation.web.crawler.novel.service.ChapterService;
-import jp.promari.curation.web.crawler.novel.service.ContentService;
-import jp.promari.curation.web.crawler.novel.service.NovelService;
+import jp.promari.curation.web.crawler.classmethod.service.ClassMethodService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +13,11 @@ public class CrawlerApplicationTests {
     private Logger logger = LoggerFactory.getLogger(CrawlerApplicationTests.class);
 
     @Autowired
-    private NovelService novelService;
-    @Autowired
-    private ChapterService chapterService;
-    @Autowired
-    private ContentService contentService;
+    private ClassMethodService novelService;
 
     @Test
-    public void testService(){
-        novelService.findAll().forEach(item -> logger.info("Query test：{}",item));
-        chapterService.findAll().forEach(item -> logger.info("Query test：{}",item));
-        contentService.findAll().forEach(item -> logger.info("Query test：{}",item));
+    public void testService() {
+        novelService.findAll().forEach(item -> logger.info("Query test：{}", item));
     }
 
 
