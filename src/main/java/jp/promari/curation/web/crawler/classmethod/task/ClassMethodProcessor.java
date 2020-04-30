@@ -1,8 +1,11 @@
 package jp.promari.curation.web.crawler.classmethod.task;
 
 import jp.promari.curation.web.crawler.classmethod.dto.ClassMethodDTO;
+import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.util.BsonUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import us.codecraft.webmagic.Page;
@@ -11,12 +14,17 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.scheduler.BloomFilterDuplicateRemover;
 import us.codecraft.webmagic.scheduler.QueueScheduler;
+import us.codecraft.webmagic.selector.Selectable;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class ClassMethodProcessor implements PageProcessor {
@@ -24,11 +32,19 @@ public class ClassMethodProcessor implements PageProcessor {
     @Autowired
     private ClassMethodPipeline novelPipeline;
 
+    //クラスメソッドのアーカイブページのurlに設定する日付
+    ZonedDateTime d = ZonedDateTime.now(ZoneId.of("Asia/Tokyo"));
+    DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd/");
+    String today = f.format(d);
+
     /**
      * クローリング先のURL
      */
-    private String targetURLToCrawl = "https://dev.classmethod.jp/feed/";
+    private String targetURLToCrawlVer2 = "https://dev.classmethod.jp/"+today;
 
+    /**
+     * クローラーの設定
+     */
     private Site site = Site.me()
             .setCharset(null)
             .setTimeOut(10 * 1000)
@@ -42,6 +58,23 @@ public class ClassMethodProcessor implements PageProcessor {
 
     @Override
     public void process(Page page) {
+
+        //アーカイブページがない場合
+        //イベント情報がない場合
+
+        //日別のアーカイブページのイベントタグから詳細ページのurlゲット
+        List<String> urls = page.getHtml().getDocument()
+                .getElementById("articleNavsTypeNew")
+                .select("li.news")
+                .select("p.title")
+                .select("a")
+                .stream()
+                .map(element -> element.attr("href"))
+                .collect(Collectors.toList());
+
+        System.out.println(urls.get(0));
+
+        //取得したhtmlのnodeをリストに
         List<Node> nodes = page
                 .getHtml()
                 .getDocument()
@@ -49,6 +82,8 @@ public class ClassMethodProcessor implements PageProcessor {
                 .childNodes().get(1)
                 .childNodes().get(0)
                 .childNodes().get(1).childNodes();
+
+        //タグ名「item」で抽出
         List targetNodes = nodes.stream()
                 .filter(node -> node.nodeName().equals("item"))
                 .collect(Collectors.toList());
@@ -58,22 +93,36 @@ public class ClassMethodProcessor implements PageProcessor {
             Node node = (Node) target;
             // inset DTO
             ClassMethodDTO classMethodDTO = ClassMethodDTO.builder().build();
+
             // Title
             String rowTitle = node.childNodes().get(1).toString();
             classMethodDTO.setTitle(rowTitle.substring(7, rowTitle.length() - 8));
+
             // Link
             classMethodDTO.setLink(node.childNodes().get(4).toString());
+
             // pubdate
             classMethodDTO.setPubdate(node.childNodes().get(6).toString());
+
+            //Permalink
             try {
                 classMethodDTO.setPermalink(node.childNodes().get(18));
             } catch (IndexOutOfBoundsException e) {
                 classMethodDTO.setPermalink(node.childNodes().get(10));
             }
+            //PermalinkId
+            classMethodDTO
+                    .setPermalinkId(classMethodDTO
+                            .getPermalink()
+                            .toString()
+                            .substring(11, classMethodDTO.getPermalink().toString().length() - 17));
 
-            classMethodDTO.setPermalinkId(classMethodDTO.getPermalink().toString().substring(11, classMethodDTO.getPermalink().toString().length() - 17));
+            String permalink = classMethodDTO
+                    .getPermalink()
+                    .toString()
+                    .substring(28, classMethodDTO.getPermalink().toString().length() - 8);
 
-            String permalink = classMethodDTO.getPermalink().toString().substring(28, classMethodDTO.getPermalink().toString().length() - 8);
+
             String regex = "(\\d+)";
             Pattern p = Pattern.compile(regex);
             Matcher permalinkMatcher = p.matcher(permalink);
@@ -81,6 +130,7 @@ public class ClassMethodProcessor implements PageProcessor {
             if (permalinkMatcher.find()) {
                 classMethodDTO.setPermalinkId(permalinkMatcher.group());
             }
+
             // image
             String rowImageUrl = null;
             try {
@@ -111,7 +161,7 @@ public class ClassMethodProcessor implements PageProcessor {
         System.out.println("Start crawling .....");
         startTime = System.currentTimeMillis();
         Spider.create(new ClassMethodProcessor())
-                .addUrl(targetURLToCrawl)
+                .addUrl(targetURLToCrawlVer2)
                 .setScheduler(new QueueScheduler().setDuplicateRemover(new BloomFilterDuplicateRemover(100000)))
                 .thread(20)
                 .addPipeline(novelPipeline)

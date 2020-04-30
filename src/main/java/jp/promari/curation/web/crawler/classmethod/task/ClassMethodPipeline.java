@@ -34,6 +34,7 @@ public class ClassMethodPipeline implements Pipeline {
                             .image(dto.getImage())
                             .build();
 
+                    System.out.println(classMethodEntity);
                     classMethodService.save(classMethodEntity);
                 }
             });
